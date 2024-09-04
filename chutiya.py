@@ -112,6 +112,34 @@ class Lexer:
         else:
             return Token(Tfloat, float(num_str))
 
+#########
+# NODES #
+#########
+
+class numberNode:
+    def __init__(self, token):
+        self.token = token
+    def __repr__(self):
+        return f'{self.token}'
+
+class binaryOperatorNode:
+    def __init__(self, lnode, opr, rnode):
+        self.lnode = lnode
+        self.opr = opr
+        self.rnode = rnode
+    def __repr__(self):
+        return f'{self.lnode, self.opr, self.rnode}'
+
+##########
+# PARSER #
+##########
+
+
+
+#######
+# RUN #
+#######
+
 def run(text):
     lexer = Lexer(text)
     tokens, error = lexer.make_tokens()
