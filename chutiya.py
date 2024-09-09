@@ -137,6 +137,38 @@ class binaryOperatorNode:
 class Parser:
     def __init__(self, tokens):
         self.tokens = tokens
+        self.token_index = 1
+        self.advance()
+    def advance(self):
+        self.token_index += 1
+        if self.token_index < len(self.tokens):
+            self.current_token = self.tokens[self.token_index]
+        return self.current_token
+    def factor(self):
+        if self.current_token.type in (Tint, Tfloat):
+            self.advance()
+            return numberNode(self.current_token)
+    def term(self):
+        left = self.factor()
+        while self.current_token.type in (Tmult, Tdiv):
+            opr = self.current_token()
+            self.advance()
+            right = self.factor()
+            eqn = binaryOperatorNode(left, opr, right)
+        return eqn
+    def expression(self):
+        left = self.term()
+        while self.current_token.type in (Tplus, Tminus):
+            opr = self.current_token()
+            self.advance()
+            right = self.term()
+            eqn = binaryOperatorNode(left, opr, right)
+        return eqn
+    
+
+        
+        
+
 
 #######
 # RUN #
@@ -145,6 +177,7 @@ class Parser:
 def run(text):
     lexer = Lexer(text)
     tokens, error = lexer.make_tokens()
-    return tokens, error
+    parser = Parser(tokens)
+    return tokens, error, parser
 
 

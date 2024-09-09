@@ -2,7 +2,7 @@ import chutiya
 
 while True:
     text = input("» chutiya » ")
-    result, error = chutiya.run(text)
+    result, error, parser = chutiya.run(text)
     
     if error:
         print(error.err_string())
