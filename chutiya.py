@@ -1,183 +1,78 @@
-##########
-# TOKENS #
-##########
-
-# defining the type of tokens we will use in the code
-Tint = 'int'
-Tfloat = 'flt'
-Tplus = 'plus'
-Tminus = 'minus'
-Tmult = 'mult'
-Tdiv = 'div'
-TLparen = 'Lpar'
-TRparen = 'Rpar'
-
-# defining the class token, initiating it and representing it
-class Token:
-    def __init__(self, type_, value):
-        self.type = type_
-        self.value = value
-    
-    def __repr__(self):
-        if self.value: return f'{self.type}:{self.value}'
-        return f'{self.type}'
-
-#############
-# CONSTANTS #
-#############
-
-DIGITS='0123456789'
-
-##########
-# ERRORS #
-##########
-
-class Error:
-    def __init__(self, err_name, details):
-        self.err_name = err_name
-        self.details = details
-    def err_string(self):
-        result = f'{self.err_name}:{self.details}'
-        return result
-
-class illegalChar(Error):
-    def __init__(self, details):
-        super().__init__(self, details)        
-
-############
-# POSITION #
-############
-
 #########
 # LEXER #
 #########
 
-# defining the Lexer class, initiating it and making it traverse through text.
-# The lexer will go through are code and tokenize the text for the compiller to understand
-class Lexer:
-    def __init__(self, text):
-        self.text = text
-        self.pos = -1
-        self.current_char = None
-        self.advance()
-    
+# defining the Lexer class, initiating it and making it break down the input text into tokens.
+class Lexer:    
+    def __init__(self, inp):
+        self.inp = inp
+        self.i = 0
+        self.tokenStack = self.tokenize()
+
+    def tokenize(self):
+        tokens=[]
+        for rows in self.inp.split('\n'):
+            for token in rows.split(' '):
+                  if token == 'print':
+                      tokens.append('print')
+                  elif token == 'input':   # didn't have time to add inputs to parser so this is kinda useless
+                      tokens.append('input')
+                  elif token == '+':
+                      tokens.append(['+', 'add'])
+                  elif token == '-':
+                      tokens.append(['-', 'sub'])
+                  elif token == '*':
+                      tokens.append(['*', 'mul'])
+                  elif token == '/':
+                      tokens.append(['/', 'div'])
+                  elif token.isnumeric():
+                      tokens.append(token)
+                  elif token == '':
+                      pass
+                  elif token.isalpha():
+                      tokens.append(token)
+                  else:
+                      print("syntax err")                   
+        return tokens
     def advance(self):
-        self.pos += 1
-        self.current_char = self.text[self.pos] if self.pos < len(self.text) else None
-    
-    def make_tokens(self):
-        tokens = []
-        while self.current_char != None:
-            if self.current_char in ' \t':
-                self.advance()
-            elif self.current_char in DIGITS:
-                tokens.append(self.make_number())
-            elif self.current_char == '+':
-                tokens.append(Tplus)
-                self.advance()
-            elif self.current_char == '-':
-                tokens.append(Tminus)
-                self.advance()
-            elif self.current_char == '*':
-                tokens.append(Tmult)
-                self.advance()
-            elif self.current_char == '/':
-                tokens.append(Tdiv)
-                self.advance()
-            elif self.current_char == '(':
-                tokens.append(TLparen)
-                self.advance()
-            elif self.current_char == ')':
-                tokens.append(TRparen)
-                self.advance()
-            else:
-                char = self.current_char
-                self.advance()
-                return [], illegalChar(char+" chutiya, ye illegal hai")
-        return tokens, None
-    
-    def make_number(self):
-        num_str = ''
-        dot_count = 0
-        while self.current_char != None and self.current_char in DIGITS + '.':
-            if self.current_char == '.':
-                if dot_count == 1: break
-                dot_count += 1
-                num_str += '.'
-            else:
-                num_str += self.current_char
-            self.advance()
-        if dot_count == 0:
-            return Token(Tint, int(num_str))
+        if self.i < len(self.tokens):
+            current_token = (self.tokens)[self.i]
+            self.i+=1
+            return(current_token)
         else:
-            return Token(Tfloat, float(num_str))
-
-#########
-# NODES #
-#########
-
-class numberNode:
-    def __init__(self, token):
-        self.token = token
-    def __repr__(self):
-        return f'{self.token}'
-
-class binaryOperatorNode:
-    def __init__(self, lnode, opr, rnode):
-        self.lnode = lnode
-        self.opr = opr
-        self.rnode = rnode
-    def __repr__(self):
-        return f'{self.lnode, self.opr, self.rnode}'
+            return None
 
 ##########
 # PARSER #
 ##########
 
+# defining the Parser class, taking the input tokens and assigning a proper response to the given tokens.
 class Parser:
-    def __init__(self, tokens):
+    def __init__(self,tokens):
         self.tokens = tokens
-        self.token_index = 1
-        self.advance()
+        self.i=0
+
     def advance(self):
-        self.token_index += 1
-        if self.token_index < len(self.tokens):
-            self.current_token = self.tokens[self.token_index]
-        return self.current_token
-    def factor(self):
-        if self.current_token.type in (Tint, Tfloat):
-            self.advance()
-            return numberNode(self.current_token)
-    def term(self):
-        left = self.factor()
-        while self.current_token.type in (Tmult, Tdiv):
-            opr = self.current_token()
-            self.advance()
-            right = self.factor()
-            eqn = binaryOperatorNode(left, opr, right)
-        return eqn
-    def expression(self):
-        left = self.term()
-        while self.current_token.type in (Tplus, Tminus):
-            opr = self.current_token()
-            self.advance()
-            right = self.term()
-            eqn = binaryOperatorNode(left, opr, right)
-        return eqn
-    
+        if self.i < len(self.tokens):
+            current_token = (self.tokens)[self.i]
+            self.i+=1
+            return(current_token)
+        else:
+            return None
 
-        
-        
-
+    def parsePrint(self):
+        while self.i<len(self.tokens):
+             if self.tokens[self.i]=='print':
+                self.advance()
+                next_token = self.advance()
+                print (next_token)
 
 #######
 # RUN #
 #######
 
-def run(text):
-    lexer = Lexer(text)
-    tokens, error = lexer.make_tokens()
+def run(inp):
+    lexer = Lexer(inp)
+    tokens = lexer.tokenize()
     parser = Parser(tokens)
-    return tokens, error, parser
-
-
+    return tokens, parser
