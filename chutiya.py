@@ -18,13 +18,13 @@ class Lexer:
                   elif token == 'input':   # didn't have time to add inputs to parser so this is kinda useless
                       tokens.append('input')
                   elif token == '+':
-                      tokens.append(['+', 'add'])
+                      tokens.append('+')
                   elif token == '-':
-                      tokens.append(['-', 'sub'])
+                      tokens.append('-')
                   elif token == '*':
-                      tokens.append(['*', 'mul'])
+                      tokens.append('*')
                   elif token == '/':
-                      tokens.append(['/', 'div'])
+                      tokens.append('/')
                   elif token.isnumeric():
                       tokens.append(token)
                   elif token == '':
@@ -54,18 +54,56 @@ class Parser:
 
     def advance(self):
         if self.i < len(self.tokens):
-            current_token = (self.tokens)[self.i]
-            self.i+=1
-            return(current_token)
+            current_token = self.tokens[self.i]
+            if self.i+1 < len(self.tokens):
+                self.i+=1
+            else:
+                return(None)
+            next_token = self.tokens[self.i]
+            return(next_token)
         else:
             return None
 
     def parsePrint(self):
         while self.i<len(self.tokens):
-             if self.tokens[self.i]=='print':
-                self.advance()
+            if self.tokens[self.i]=='print':
                 next_token = self.advance()
-                print (next_token)
+                print(next_token)
+                self.advance()
+            else:
+                break
+    def parseMath(self):
+        while self.i<len(self.tokens):
+            if self.tokens[self.i].isnumeric():
+                current_token = self.tokens[self.i]
+                next_token = self.advance()
+                if next_token == '+':
+                    next_token = self.advance()
+                    sum = int(current_token) + int(next_token)
+                    print(sum)
+                    self.advance()
+                elif next_token == '-':
+                    next_token = self.advance()
+                    sub = int(current_token) - int(next_token)
+                    print(sub)
+                    self.advance()
+                elif next_token == '/':
+                    next_token = self.advance()
+                    div = int(current_token) / int(next_token)
+                    print(div)
+                    self.advance()
+                elif next_token == '*':
+                    next_token = self.advance()
+                    prod = int(current_token) * int(next_token)
+                    print(prod)
+                    self.advance()
+                elif self.advance()==None:
+                    break
+
+            else:
+                break
+                
+
 
 #######
 # RUN #

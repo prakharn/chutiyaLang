@@ -1,0 +1,61 @@
+            if self.tokens[self.i].isnumeric():
+                current_token = (self.tokens)[self.i]
+                next_token = self.advance()
+                if next_token == '+':
+                    print(current_token)
+                    next_token = self.advance()
+                    sum = current_token + next_token
+                    print(sum)
+                elif next_token == '-':
+                    self.advance()
+                    next_token = self.advance()
+                    sub = current_token - next_token
+                    print(sub)
+                elif next_token == '-':
+                    self.advance()
+                    next_token = self.advance()
+                    div = current_token / next_token
+                    print(div)
+                elif next_token == '*':
+                    self.advance()
+                    next_token = self.advance()
+                    prod = current_token * next_token
+                    print(prod)
+            else:
+                break
+
+            if (tokens[k])==['+', 'add']:
+                k+=1
+            elif (tokens[k]).isnumeric():
+                k+=1
+            else:
+                break
+if next_token == '+':
+                    print(current_token)
+                    next_token = self.advance()
+                    sum = current_token + next_token
+                    print(sum)
+                elif next_token == '-':
+                    self.advance()
+                    next_token = self.advance()
+                    sub = current_token - next_token
+                    print(sub)
+                elif next_token == '-':
+                    self.advance()
+                    next_token = self.advance()
+                    div = current_token / next_token
+                    print(div)
+                elif next_token == '*':
+                    self.advance()
+                    next_token = self.advance()
+                    prod = current_token * next_token
+                    print(prod)
+            elif self.tokens[self.i]=='+':
+                pass
+
+            elif self.tokens[self.i]=='-':
+                pass
+            elif self.tokens[self.i]=='':
+                pass
+            else:
+                print(self.tokens[self.i])
